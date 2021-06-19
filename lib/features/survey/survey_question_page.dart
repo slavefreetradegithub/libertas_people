@@ -101,32 +101,37 @@ class _SurveyQuestionPageState extends State<SurveyQuestionPage> {
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 30, horizontal: 20),
                             // height: height * 0.35,
                             child: Text(
-                              _question.display,
+                              formatQuestionText(_question.display),
                               style: const TextStyle(fontSize: 20),
                             ),
                           ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              if (_isTextEntryQuestion)
-                                _buildTextFieldAnswerWidget()
-                              else
-                                // _buildMCAnswerOptionsWidget(),
-                                MultipleChoiceButtonColumn(
-                                  _question.questionId,
-                                  _question.choices,
-                                  updateAnswer: (Map<String, dynamic> answer) {
-                                    _answer = answer;
-                                  },
-                                  previousAnswer: _answer,
-                                )
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (_isTextEntryQuestion)
+                                  _buildTextFieldAnswerWidget()
+                                else
+                                  // _buildMCAnswerOptionsWidget(),
+                                  MultipleChoiceButtonColumn(
+                                    _question.questionId,
+                                    _question.choices,
+                                    updateAnswer:
+                                        (Map<String, dynamic> answer) {
+                                      _answer = answer;
+                                    },
+                                    previousAnswer: _answer,
+                                  )
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -173,17 +178,18 @@ class _SurveyQuestionPageState extends State<SurveyQuestionPage> {
   }
 
   Widget _buildTextFieldAnswerWidget() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: TextField(
-          controller: _textAnswerController,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-          ),
-          onChanged: (newValue) {
-            _answer = {_question.questionId: newValue};
-          }),
-    );
+    return TextField(
+        controller: _textAnswerController,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+        ),
+        onChanged: (newValue) {
+          _answer = {_question.questionId: newValue};
+        });
+  }
+
+  String formatQuestionText(String text) {
+    return text.replaceAll('<br>', '\n').replaceAll('&nbsp;', ' ');
   }
 
   Future<bool> _onBackPressed(BuildContext context) {

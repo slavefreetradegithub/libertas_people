@@ -49,25 +49,26 @@ class _OnboardingPageState extends State<OnboardingPage> {
     final List<Widget> _tabViewList = [
       OnBoardingTabView(
         topText:
-            S.of(context).youAreInvitedToTakePartInTheStaffSurveyThatPlaysAn,
+            S.of(context).welcome,
         bottomText: S
             .of(context)
             .youWillAnswer20MultipleChoiceQuestionsTheFirstTimeYouAccessTheSurvey,
         imagePath: AppImages.onBoarding1,
+        isSvg: true,
       ),
       OnBoardingTabView(
         topText: S
             .of(context)
-            .asPartOfMonitoringYouAreAskedToFillOutTheSurveyRegularly,
+            .regularReminders,
         bottomText: S
             .of(context)
             .afterTheInitialSurveyYouWillReceive10QuestionsEachMonth,
         imagePath: AppImages.onBoarding2,
+        isSvg: true,
       ),
       OnBoardingTabView(
-        topText: S.of(context).thisMonthsSurveyIsReadyForYou,
-        bottomText:
-            S.of(context).dontWorryWellNotifyYouWhenItsTimeToUpdateYourSurvey,
+        topText: S.of(context).notifications,
+        bottomText: S.of(context).dontWorryWellNotifyYouWhenItsTimeToUpdate,
         imagePath: AppImages.onBoarding3,
       ),
     ];
@@ -76,31 +77,20 @@ class _OnboardingPageState extends State<OnboardingPage> {
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Column(children: [
-              const SizedBox(height: 10),
-              Text(
-                S.of(context).welcome,
-                style: const TextStyle(
-                    fontSize: 32.0,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.orange),
+          child: Column(children: [
+            const SizedBox(height: 20),
+            Expanded(
+              child: PageView(
+                onPageChanged: _onSwipe,
+                controller: _controller,
+                children: _tabViewList,
               ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: PageView(
-                  onPageChanged: _onSwipe,
-                  controller: _controller,
-                  children: _tabViewList,
-                ),
-              ),
-              _buildLetsGetStartedButton(context),
-              _buildTabIndicatorRow(),
-              const SizedBox(height: 10),
-              _buildSkipTextButton(_tabViewList, context),
-            ]),
-          ),
+            ),
+            _buildLetsGetStartedButton(context),
+            _buildTabIndicatorRow(),
+            const SizedBox(height: 10),
+            _buildSkipTextButton(_tabViewList, context),
+          ]),
         ),
       ),
     );
@@ -154,10 +144,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   SizedBox _buildLetsGetStartedButton(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      child: _isLastPage
-          ? Wrap(
+    return _isLastPage
+        ? SizedBox(
+            height: 100,
+            child: Wrap(
               direction: Axis.vertical,
               alignment: WrapAlignment.center,
               children: <Widget>[
@@ -166,8 +156,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   onPressed: _onLetsGetStartedButtonClick,
                 ),
               ],
-            )
-          : null,
-    );
+            ),
+          )
+        : const SizedBox.shrink();
   }
 }

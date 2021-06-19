@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../features/privacyPolicyAndTerms/privacy_policy_page.dart';
 import '../../features/privacyPolicyAndTerms/terms_and_conditions_page.dart';
 import '../../generated/l10n.dart';
 import '../../shared_ui_elements/colors.dart';
-import '../../shared_ui_elements/images.dart';
 import 'about_data.dart';
 import 'principle.dart';
 
@@ -20,35 +20,40 @@ class AboutPage extends StatefulWidget {
 class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: AppColors.darkBlue,
-        title: Text(
-          S.of(context).aboutSurvey,
-        ),
-        centerTitle: true,
-        actions: <Widget>[
-          PopupMenuButton<String>(
-            onSelected: handleClick,
-            itemBuilder: (BuildContext context) {
-              return {
-                S.of(context).privacyPolicy,
-                S.of(context).termsAndConditions
-              }.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
+    return WillPopScope(
+        onWillPop: () async {
+          widget.onTakeSurveyPressed();
+          return false;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            brightness: Brightness.dark,
+            backgroundColor: AppColors.darkBlue,
+            title: Text(
+              S.of(context).aboutSurvey,
+            ),
+            centerTitle: true,
+            actions: <Widget>[
+              PopupMenuButton<String>(
+                onSelected: handleClick,
+                itemBuilder: (BuildContext context) {
+                  return {
+                    S.of(context).privacyPolicy,
+                    S.of(context).termsAndConditions,
+                    S.of(context).slavefreetradeorg
+                  }.map((String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(choice),
+                    );
+                  }).toList();
+                },
+              ),
+            ],
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 16.0, left: 25, right: 25),
-          child: Column(
+          body: ListView(
+            padding: const EdgeInsets.only(top: 16.0, left: 25, right: 25),
             children: [
               Text(
                 S
@@ -68,28 +73,7 @@ class _AboutPageState extends State<AboutPage> {
                       fontWeight: FontWeight.w400,
                       fontSize: 17.0,
                       wordSpacing: 3.5)),
-              const SizedBox(height: 14),
-              Row(
-                children: [
-                  Image.asset(
-                    AppImages.logoImage,
-                    height: 48.88,
-                    width: 47,
-                  ),
-                  Flexible(
-                    child: Text(
-                      S.of(context).readMoreAboutSlavefreetrade,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 17.0,
-                        wordSpacing: 3.5,
-                      ),
-                      softWrap: true,
-                    ),
-                  )
-                ],
-              ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 11),
               Text(S.of(context).tapOnEachButtonToReadMoreAboutEachPrinciple,
                   style: const TextStyle(
                       fontWeight: FontWeight.w400,
@@ -102,17 +86,19 @@ class _AboutPageState extends State<AboutPage> {
                   primary: false,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(6),
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
                   crossAxisCount: 2,
-                  childAspectRatio: 5 / 2,
+                  childAspectRatio: 1.5,
                   children: getAboutData(context).map((principle) {
                     return TextButton(
                       style: ButtonStyle(
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        )),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
                         backgroundColor: MaterialStateProperty.all(
                           Color(principle['color'] as int),
                         ),
@@ -131,35 +117,27 @@ class _AboutPageState extends State<AboutPage> {
                         }));
                       },
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                        padding: const EdgeInsets.only(left: 5, right: 5),
                         child: Row(
                           children: [
-                            Text(
-                              principle['id'] as String,
-                              style: const TextStyle(
-                                  color: AppColors.white,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w300),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 8.0,
-                                right: 8.0,
-                              ),
+                            Center(
                               child: Image.asset(
                                 principle['image'] as String,
                                 width: principle['image_size'] as double,
                               ),
                             ),
-                            Flexible(
+                            const SizedBox(width: 5),
+                            Expanded(
                               child: Text(
-                                principle['title'].substring(
-                                    0, principle['title'].length - 1) as String,
-                                style: TextStyle(
+                                principle['title'] as String,
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(
                                   color: AppColors.white,
-                                  fontSize: principle['size'] as double,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
                                 ),
                                 softWrap: true,
+                                overflow: TextOverflow.visible,
                               ),
                             ),
                           ],
@@ -170,36 +148,9 @@ class _AboutPageState extends State<AboutPage> {
                 ),
               ),
               const SizedBox(height: 30),
-              Container(
-                height: 54,
-                width: 240,
-                margin: const EdgeInsets.only(bottom: 20),
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(40)),
-                child: TextButton(
-                    style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(40)),
-                        ),
-                        backgroundColor:
-                            MaterialStateProperty.all(AppColors.orange)),
-                    onPressed: widget.onTakeSurveyPressed,
-                    child: Text(
-                      S.of(context).takeSurvey,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 24.0,
-                      ),
-                    )),
-              )
             ],
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   void handleClick(String value) {
@@ -209,6 +160,13 @@ class _AboutPageState extends State<AboutPage> {
     } else if (value == S.of(context).termsAndConditions) {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => const TermsAndConditionsPage()));
+    } else if (value == S.of(context).slavefreetradeorg) {
+      launchSlavefreetradeWebsite();
     }
+  }
+
+  Future<void> launchSlavefreetradeWebsite() async {
+    const url = 'https://www.slavefreetrade.org';
+    await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
   }
 }

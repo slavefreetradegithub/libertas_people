@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../generated/l10n.dart';
+import '../../shared_ui_elements/buttons/button_orange_color.dart';
 import '../../shared_ui_elements/colors.dart';
 import '../select_survey_frequency_page.dart';
 
@@ -30,31 +31,17 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
         children: [
           Text(
             S.of(context).termsAndConditionsContent,
-            style: const TextStyle(fontSize: 14.0, wordSpacing: 3.5),
+            textAlign: TextAlign.start,
+            style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400),
           ),
           const SizedBox(height: 20),
           if (widget.shouldShowAccept)
-            TextButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(AppColors.orange),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40)),
-                ),
-              ),
-              onPressed: () {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => SelectSurveyFrequencyPage()));
-              },
-              child: Text(
-                S.of(context).accept,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 24,
-                ),
-              ),
-            ),
+            ButtonOrangeColor(
+                label: S.of(context).accept,
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => SelectSurveyFrequencyPage()));
+                }),
           const SizedBox(height: 25),
         ],
       ),

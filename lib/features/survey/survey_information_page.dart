@@ -38,13 +38,13 @@ class _SurveyInformationPageState extends State<SurveyInformationPage> {
         },
         child: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -70,23 +70,21 @@ class _SurveyInformationPageState extends State<SurveyInformationPage> {
                                 .of(context)
                                 .completingTheSurveyWillNotExposeYouToAnyRiskOrRepercussionWithYour),
                             const SizedBox(height: 25),
-                            _buildRowItem(S
-                                .of(context)
-                                .questionsMarkedWithAStarSymbolAreObligatoryToAnswer),
+                            // _buildRowItem(S
+                            //     .of(context)
+                            //     .questionsMarkedWithAStarSymbolAreObligatoryToAnswer),
                             const SizedBox(height: 25),
                           ]),
                     ),
                   ),
-                  NextPreviousButtons(
-                    onBackPressed: () => Navigator.pop(context),
-                    onNextPressed: () =>
-                        context
-                        .read<SurveyCubit>()
-                        .startSurvey(widget.surveyId),
-                    previousButtonLabel: S.of(context).back,
-                  )
-                ],
-              ),
+                ),
+                NextPreviousButtons(
+                  onBackPressed: () => Navigator.pop(context),
+                  onNextPressed: () =>
+                      context.read<SurveyCubit>().startSurvey(widget.surveyId),
+                  previousButtonLabel: S.of(context).back,
+                )
+              ],
             ),
             SurveyLoadingIndicator(),
           ],
